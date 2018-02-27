@@ -4,6 +4,7 @@ namespace app\services;
 
 
 use app\exceptions\HoldFailedException;
+use app\factories\AccountManagerFactory;
 use app\models\Order;
 use Exception;
 use Throwable;
@@ -38,12 +39,12 @@ class OrderCreator
      *
      * @throws InvalidConfigException
      */
-    public function __construct(Order $order)
+    public function __construct(Order $order, AccountManagerFactory $accountManagerFactory)
     {
 
         $this->marketExchange = Yii::createObject(MarketExchange::class, [$order]);
 
-        $this->accountHold = Yii::createObject(AccountManager::class, [$order->user, $order->holdCurrency]);
+        $this->accountHold = $accountManagerFactory->createByOrder($order,false);
 
         $this->order = $order;
     }

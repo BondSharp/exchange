@@ -2,6 +2,7 @@
 
 namespace app\services;
 
+use app\factories\AccountManagerFactory;
 use app\models\Currency;
 use app\models\Tools;
 use app\models\User;
@@ -53,29 +54,13 @@ class Exchange
      * @param float $amount
      * @param float $rate
      *
-     * @throws \yii\base\InvalidConfigException
      */
-    public function __construct(User $buyer, User $seller, Tools $tools, float $amount, float $rate)
+    public function __construct(User $buyer, User $seller, Tools $tools, float $amount, float $rate, AccountManagerFactory $factory)
     {
-        $this->buyerDeposit = Yii::createObject(AccountManager::class, [
-            'user' => $buyer,
-            'currency' => $tools->quoteCurrency
-        ]);
-
-        $this->buyerWithdraw = Yii::createObject(AccountManager::class, [
-            'user' => $buyer,
-            'currency' => $tools->baseCurrency
-        ]);
-
-        $this->sellerDeposit = Yii::createObject(AccountManager::class, [
-            'user' => $seller,
-            'currency' => $tools->baseCurrency
-        ]);
-
-        $this->sellerWithdraw = Yii::createObject(AccountManager::class, [
-            'user' => $seller,
-            'currency' => $tools->quoteCurrency
-        ]);
+        $this->buyerDeposit = $factory->createByTools($tools, $buyer, true, true);
+        $this->buyerWithdraw = $factory->createByTools($tools, $buyer, true, false);
+        $this->sellerDeposit = $factory->createByTools($tools, $seller, false, true);
+        $this->sellerWithdraw = $factory->createByTools($tools, $seller, false, false);
 
         $this->quoteAmount = $amount;
         $this->baseAmount = $amount / $rate;
@@ -91,7 +76,7 @@ class Exchange
         $this->buyerWithdraw->withdrawAndUnHold($this->baseAmount);
 
         $this->sellerDeposit->deposit($this->baseAmount);
-        $this->buyerWithdraw->withdrawAndUnHold($this->quoteAmount);
+        $this->sellerWithdraw->withdrawAndUnHold($this->quoteAmount);
     }
 
 

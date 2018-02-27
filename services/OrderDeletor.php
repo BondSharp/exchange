@@ -3,11 +3,10 @@
 namespace app\services;
 
 
+use app\factories\AccountManagerFactory;
 use app\models\Order;
 use Exception;
 use Throwable;
-use yii\base\Component;
-use Yii;
 use yii\db\StaleObjectException;
 
 /**
@@ -26,11 +25,14 @@ class OrderDeletor
 
 
     /**
-     * @inheritdoc
+     * OrderDeletor constructor.
+     *
+     * @param Order $order
+     * @param AccountManagerFactory $accountManagerFactory
      */
-    public function __construct(Order $order)
+    public function __construct(Order $order,AccountManagerFactory $accountManagerFactory)
     {
-        $this->accountUnHold = Yii::createObject(AccountManager::class, [$order->user,$order->holdCurrency]);
+        $this->accountUnHold = $accountManagerFactory->createByOrder($order,false);
         $this->order = $order;
     }
 

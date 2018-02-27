@@ -18,7 +18,6 @@ use yii\db\ActiveRecord;
  * @property string $created_at
  *
  * @property float $hold
- * @property Currency $holdCurrency
  *
  * @property  Tools $tools
  * @property User $user
@@ -112,19 +111,6 @@ class Order extends ActiveRecord
         }
         if ($this->isSell()) {
             return $this->amount;
-        }
-    }
-
-    /**
-     * @return Currency
-     */
-    public function getHoldCurrency(): Currency
-    {
-        if ($this->isBuy()) {
-            return $this->tools->baseCurrency;
-        }
-        if ($this->isSell()) {
-            return $this->tools->quoteCurrency;
         }
     }
 

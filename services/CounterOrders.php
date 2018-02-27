@@ -50,7 +50,7 @@ class CounterOrders
                 break;
             case Order::TYPE_BUY:
                 $type = Order::TYPE_SELL;
-                $filterRate = '<=';
+                $filterRate = '>=';
                 $rateSort = SORT_DESC;
                 break;
             default :
