@@ -33,8 +33,11 @@ class OrderController extends BaseController
     /**
      * @return Order
      *
-     * @throws InvalidConfigException
+     * @throws Exception
      * @throws HoldFailedException
+     * @throws InvalidConfigException
+     * @throws StaleObjectException
+     * @throws Throwable
      */
     public function actionCreate() : Order
     {
