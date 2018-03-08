@@ -10,6 +10,10 @@ use app\models\Tools;
 use app\models\User;
 use app\services\AccountManager;
 use Yii;
+
+/**
+ * Class AccountManagerFactory
+ */
 class AccountManagerFactory
 {
     /**
@@ -37,7 +41,13 @@ class AccountManagerFactory
         return $this->createByTools($order->tools, $order->user, $order->isBuy(),$in);
     }
 
-
+    /**
+     * @param Tools $tools
+     * @param bool $isBuyer
+     * @param bool $in
+     *
+     * @return Currency
+     */
     private function getCurrency(Tools $tools, bool $isBuyer, bool $in) :  Currency
     {
         if (($isBuyer && $in) || (!$isBuyer && !$in)) {
