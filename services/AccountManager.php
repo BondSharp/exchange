@@ -6,7 +6,7 @@ use app\exceptions\HoldFailedException;
 use app\models\Account;
 use app\models\Currency;
 use app\models\User;
-use yii\helpers\ArrayHelper;
+use Yii;
 
 /**
  * Class AccountManager
@@ -36,6 +36,17 @@ class AccountManager
     }
 
     /**
+     * @param User $user
+     * @param Currency $currency
+     *
+     * @return AccountManager
+     */
+    public static function create(User $user, Currency $currency) : self
+    {
+        return Yii::createObject(self::class, [$user, $currency]);
+    }
+
+    /**
      *
      * @return void
      */
@@ -59,7 +70,7 @@ class AccountManager
         $this->updateCounters(
             [
                 'balance' => -$amount,
-                'free' =>  -$amount,
+                'free' => -$amount,
                 'hold' => -$amount
             ]
         );
@@ -115,7 +126,7 @@ class AccountManager
             'AND',
             ['=', 'user_id', $this->user->id],
             ['=', 'currency_id', $this->currency->id]
-        ],$condition);
+        ], $condition);
 
         return Account::updateAllCounters($counters, $condition);
     }

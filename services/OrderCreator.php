@@ -39,12 +39,12 @@ class OrderCreator
      *
      * @throws InvalidConfigException
      */
-    public function __construct(Order $order, AccountManagerFactory $accountManagerFactory)
+    public function __construct(Order $order)
     {
 
         $this->marketExchange = Yii::createObject(MarketExchange::class, [$order]);
 
-        $this->accountHold = $accountManagerFactory->createByOrder($order,false);
+        $this->accountHold = AccountManagerFactory::createByOrder($order)->createWithdrawal();
 
         $this->order = $order;
     }

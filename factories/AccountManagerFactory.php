@@ -9,6 +9,7 @@ use app\models\Order;
 use app\models\Tools;
 use app\models\User;
 use app\services\AccountManager;
+use phpDocumentor\Reflection\Types\Self_;
 use Yii;
 
 /**
@@ -17,45 +18,86 @@ use Yii;
 class AccountManagerFactory
 {
     /**
+     * @var Tools
+     */
+    private $tools;
+    /**
+     * @var User
+     */
+    private $user;
+
+    /**
+     * @var bool
+     */
+    private $isBuyer;
+
+    /**
+     * AccountManagerFactory constructor.
+     *
      * @param Tools $tools
      * @param User $user
      * @param bool $isBuyer
-     * @param bool $in if true need the account for deposit else withdraw
-     *
-     * @return bool
      */
-    public function createByTools(Tools $tools, User $user, bool $isBuyer, bool $in): AccountManager
+    public function __construct(Tools $tools, User $user, bool $isBuyer)
     {
-        $currency = $this->getCurrency($tools,$isBuyer,$in);
-        return Yii::createObject(AccountManager::class,[$user,$currency]);
+        $this->tools = $tools;
+        $this->user = $user;
+        $this->isBuyer = $isBuyer;
+    }
+
+    /**
+     * @return AccountManager
+     */
+    public function createDeposit(): AccountManager
+    {
+        if ($this->isBuyer) {
+            return AccountManager::create($this->user, $this->tools->quoteCurrency);
+        }
+        return AccountManager::create($this->user, $this->tools->baseCurrency);
+    }
+
+    /**
+     * @return AccountManager
+     */
+    public function createWithdrawal(): AccountManager
+    {
+        if ($this->isBuyer) {
+            return $this->createByCurrency($this->tools->baseCurrency);
+        }
+        return $this->createByCurrency($this->tools->quoteCurrency);
+    }
+
+    /**
+     * @param Currency $currency
+     *
+     * @return AccountManager
+     */
+    private function createByCurrency(Currency $currency): AccountManager
+    {
+        return AccountManager::create($this->user, $currency);
     }
 
     /**
      * @param Order $order
-     * @param bool $in if true need the account for deposit else withdraw
      *
-     * @return AccountManager
+     * @return AccountManagerFactory
      */
-    public function createByOrder(Order $order, bool $in): AccountManager
+    public static function createByOrder(Order $order): self
     {
-        return $this->createByTools($order->tools, $order->user, $order->isBuy(),$in);
+        return new self($order->tools, $order->user, $order->isBuy());
     }
 
     /**
      * @param Tools $tools
+     * @param User $user
      * @param bool $isBuyer
-     * @param bool $in
      *
-     * @return Currency
+     * @return AccountManagerFactory
      */
-    private function getCurrency(Tools $tools, bool $isBuyer, bool $in) :  Currency
+    public static function createByTools(Tools $tools, User $user, bool $isBuyer): self
     {
-        if (($isBuyer && $in) || (!$isBuyer && !$in)) {
-            return $tools->quoteCurrency;
-        }
-
-        if ((!$isBuyer && $in) || ($isBuyer && !$in)) {
-            return $tools->baseCurrency;
-        }
+        return new self($tools,$user,$isBuyer);
     }
+
+
 }

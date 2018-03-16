@@ -55,12 +55,14 @@ class Exchange
      * @param float $rate
      *
      */
-    public function __construct(User $buyer, User $seller, Tools $tools, float $amount, float $rate, AccountManagerFactory $factory)
+    public function __construct(User $buyer, User $seller, Tools $tools, float $amount, float $rate)
     {
-        $this->buyerDeposit = $factory->createByTools($tools, $buyer, true, true);
-        $this->buyerWithdraw = $factory->createByTools($tools, $buyer, true, false);
-        $this->sellerDeposit = $factory->createByTools($tools, $seller, false, true);
-        $this->sellerWithdraw = $factory->createByTools($tools, $seller, false, false);
+        $accountBuyerFactory = AccountManagerFactory::createByTools($tools, $buyer, true);
+        $accountSellerFactory = AccountManagerFactory::createByTools($tools, $buyer, true);
+        $this->buyerDeposit = $accountBuyerFactory->createDeposit();
+        $this->buyerWithdraw = $accountBuyerFactory->createWithdrawal();
+        $this->sellerDeposit = $accountSellerFactory->createDeposit();
+        $this->sellerWithdraw = $accountSellerFactory->createWithdrawal();
 
         $this->quoteAmount = $amount;
         $this->baseAmount = $amount / $rate;

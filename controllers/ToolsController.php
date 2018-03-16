@@ -26,6 +26,7 @@ class ToolsController extends BaseController
 
     /**
      * @param int $id
+     *
      * @return OrderBookForm|array
      */
     public function actionOrderBook(int $id)

@@ -30,9 +30,9 @@ class OrderDeletor
      * @param Order $order
      * @param AccountManagerFactory $accountManagerFactory
      */
-    public function __construct(Order $order,AccountManagerFactory $accountManagerFactory)
+    public function __construct(Order $order)
     {
-        $this->accountUnHold = $accountManagerFactory->createByOrder($order,false);
+        $this->accountUnHold = AccountManagerFactory::createByOrder($order)->createWithdrawal();
         $this->order = $order;
     }
 
