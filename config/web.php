@@ -49,24 +49,28 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 [
-                    'class' => 'yii\rest\UrlRule',
+                    'class' => yii\rest\UrlRule::class,
                     'controller' => 'tools',
                     'extraPatterns' => [
                         'GET {id}/order-book' => 'order-book',
                     ],
                 ],
                 [
-                    'class' => 'yii\rest\UrlRule',
+                    'class' => yii\rest\UrlRule::class,
                     'controller' => 'user'
                 ],
                 [
-                    'class' => 'yii\rest\UrlRule',
+                    'class' => yii\rest\UrlRule::class,
                     'controller' => 'currency'
                 ],
                 [
-                    'class' => 'yii\rest\UrlRule',
+                    'class' => yii\rest\UrlRule::class,
                     'controller' => 'order',
                 ],
+                [
+                    'class' => yii\rest\UrlRule::class,
+                    'controller' => 'account'
+                ]
             ],
         ]
     ],
