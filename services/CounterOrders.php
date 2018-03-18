@@ -31,51 +31,43 @@ class CounterOrders
         $this->order = $order;
     }
 
+
     /**
      * @param string $type type of order
-     * @param string $filterRate filter for rate of order
+     * @param string $filterRete filter for rate of order
      * @param int $rateSort sort by rate of order
      *
-     * @return void
-     *
-     * @throws Exception
+     * @return BatchQueryResult
      */
-    private function getCriteria(&$type, &$filterRate, &$rateSort)
+    protected function getBatchQueryResult(string $type, string $filterRate, int $rateSort): BatchQueryResult
     {
-        switch ($this->order->type) {
-            case Order::TYPE_SELL:
-                $type = Order::TYPE_BUY;
-                $filterRate = '<=';
-                $rateSort = SORT_ASC;
-                break;
-            case Order::TYPE_BUY:
-                $type = Order::TYPE_SELL;
-                $filterRate = '>=';
-                $rateSort = SORT_DESC;
-                break;
-            default :
-                throw new Exception('fatal');
-        }
-
+        return Order::find()
+            ->andWhere(['type' => $type])
+            ->andWhere(['tools_id' => $this->order->tools_id])
+            ->andWhere([$filterRate, 'rate', $this->order->rate])
+            ->orderBy([
+                'rate' => $rateSort,
+                'id' => SORT_ASC
+            ])->each();
     }
 
 
     /**
      * @return BatchQueryResult|Order[]
+     *
      * @throws Exception
      */
     public function getCounterOrders(): BatchQueryResult
     {
-        $this->getCriteria($type, $filterRete, $rateSort);
+        switch ($this->order->type) {
+            case Order::TYPE_SELL:
+                return $this->getBatchQueryResult(Order::TYPE_BUY, '<=', SORT_ASC);
+            case Order::TYPE_BUY:
+                return $this->getBatchQueryResult(Order::TYPE_SELL, '>=', SORT_DESC);
+            default :
+                throw new Exception('fatal');
+        }
 
-        return Order::find()
-            ->andWhere(['type' => $type])
-            ->andWhere(['tools_id' => $this->order->tools_id])
-            ->andWhere([$filterRete, 'rate', $this->order->rate])
-            ->orderBy([
-                'rate' => $rateSort,
-                'id' => SORT_ASC
-            ])->each();
     }
 
 }

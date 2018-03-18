@@ -20,13 +20,12 @@ class UserSearch extends BaseSearch
      */
     protected $modelClass = User::class;
 
-    public function rules()
+    public function rules() : array
     {
         return [
             ['email_like', 'string', 'max' => 50]
         ];
     }
-
 
     /**
      * @inheritdoc

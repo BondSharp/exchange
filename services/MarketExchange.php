@@ -3,11 +3,9 @@
 namespace app\services;
 
 use app\models\Order;
-use app\models\Tools;
 use app\models\User;
 use Exception;
 use Throwable;
-use yii\base\Component;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\StaleObjectException;
@@ -77,6 +75,8 @@ class MarketExchange
         $counterOrder->amount -= $amount;
         if (!$counterOrder->amount) {
             $counterOrder->delete();
+        } else {
+            $counterOrder->save(false);
         }
     }
 

@@ -58,7 +58,7 @@ class Exchange
     public function __construct(User $buyer, User $seller, Tools $tools, float $amount, float $rate)
     {
         $accountBuyerFactory = AccountManagerFactory::createByTools($tools, $buyer, true);
-        $accountSellerFactory = AccountManagerFactory::createByTools($tools, $buyer, true);
+        $accountSellerFactory = AccountManagerFactory::createByTools($tools, $seller, false);
         $this->buyerDeposit = $accountBuyerFactory->createDeposit();
         $this->buyerWithdraw = $accountBuyerFactory->createWithdrawal();
         $this->sellerDeposit = $accountSellerFactory->createDeposit();
@@ -72,13 +72,13 @@ class Exchange
     /**
      * @return void
      */
-    public function exchange()
+    public function exchange() : void
     {
         $this->buyerDeposit->deposit($this->quoteAmount);
-        $this->buyerWithdraw->withdrawAndUnHold($this->baseAmount);
+        $this->buyerWithdraw->withdrawWithHold($this->baseAmount);
 
         $this->sellerDeposit->deposit($this->baseAmount);
-        $this->sellerWithdraw->withdrawAndUnHold($this->quoteAmount);
+        $this->sellerWithdraw->withdrawWithHold($this->quoteAmount);
     }
 
 

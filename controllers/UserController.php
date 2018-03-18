@@ -8,6 +8,9 @@ use app\search\UserSearch;
 use yii\rest\Controller;
 use Yii;
 
+/**
+ * Class UserController
+ */
 class UserController extends Controller
 {
     /**
@@ -23,6 +26,9 @@ class UserController extends Controller
         ];
     }
 
+    /**
+     * @return mixed
+     */
     public function actionCreate()
     {
         $model = new UserNewForm();

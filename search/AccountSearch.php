@@ -14,17 +14,18 @@ class AccountSearch extends BaseSearch
      * @var int[]
      */
     public $id = [];
+    public $user_id = [];
 
     public function rules()
     {
         return [
-            ['id', 'filter', 'filter' => function ($id) {
-                if (is_string($id)) {
-                    return explode(',', $id);
+            [['id', 'user_id'], 'filter', 'filter' => function ($value) {
+                if (is_string($value)) {
+                    return explode(',', $value);
                 }
-                return $id;
+                return $value;
             }],
-            ['id', 'each', 'rule' => ['integer']]
+            [['id', 'user_id'], 'each', 'rule' => ['integer']]
         ];
     }
 
@@ -40,6 +41,9 @@ class AccountSearch extends BaseSearch
     {
         if ($this->id) {
             $activeQuery->andWhere(['id' => $this->id]);
+        }
+        if ($this->user_id) {
+            $activeQuery->andWhere(['user_id' => $this->user_id]);
         }
         parent::onActiveQuery($activeQuery);
     }

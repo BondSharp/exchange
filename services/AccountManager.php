@@ -65,12 +65,11 @@ class AccountManager
      *
      * @return void
      */
-    public function withdrawAndUnHold(float $amount)
+    public function withdrawWithHold(float $amount)
     {
         $this->updateCounters(
             [
                 'balance' => -$amount,
-                'free' => -$amount,
                 'hold' => -$amount
             ]
         );

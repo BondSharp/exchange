@@ -22,7 +22,7 @@ class OrderBookForm extends Model
     /**
      * @inheritdoc
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             ['depth', 'default', 'value' => 5],
@@ -41,13 +41,9 @@ class OrderBookForm extends Model
             'depth' => $this->depth
         ]);
 
-        $values = function (array $offers) : array {
-            return array_map('array_values', $offers);
-        };
-
         return [
-            'asks' => $values($model->getAsks()),
-            'bids' => $values($model->getBids()),
+            'asks' => array_map('array_values', $model->getAsks()),
+            'bids' => array_map('array_values', $model->getBids()),
             'depth' => $model->depth
         ];
     }

@@ -14,7 +14,6 @@ use yii\db\ActiveRecord;
  * @property  int $base_currency_id
  * @property int $quote_currency_id
  *
- *
  * @property Order[] $orders
  * @property Currency $baseCurrency
  * @property Currency $quoteCurrency
